@@ -3,6 +3,8 @@ package gcp
 import (
 	"cloud.google.com/go/bigquery"
 	"context"
+	"fmt"
+	"github.com/tiketdatarisal/gcp-go-client/models"
 	"golang.org/x/oauth2"
 	bq "google.golang.org/api/bigquery/v2"
 	"google.golang.org/api/iterator"
@@ -138,4 +140,32 @@ func (b *BigQuery) AllTableIDs(projectID, datasetID string, token ...string) ([]
 	}
 
 	return result, nil
+}
+
+func (b *BigQuery) AllColumns(projectID, datasetID, tableID string, token ...string) (*models.Columns, error) {
+	t := ""
+	if token != nil && len(token) > 0 {
+		t = token[0]
+	}
+
+	ctx := context.Background()
+	c, err := b.newBigQueryManager(ctx, projectID, t)
+	if err != nil {
+		return nil, err
+	} else {
+		defer func() { _ = c.Close() }()
+	}
+
+	m, err := c.Dataset(datasetID).Table(tableID).Metadata(ctx)
+	if err != nil {
+		st, err := parseGCPError(err)
+		return nil, &HttpError{Code: st, Err: err}
+	}
+
+	result := models.Columns{}
+	for _, i := range m.Schema {
+		result = append(result, models.Column{ColumnName: i.Name, DataType: fmt.Sprintf("%s", i.Type)})
+	}
+
+	return &result, nil
 }
