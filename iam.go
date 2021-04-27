@@ -12,6 +12,7 @@ type IAM struct {
 	context *Context
 }
 
+// newIamManager return a reference to iam manager client.
 func (i *IAM) newIamManager(ctx context.Context, token string) (*iam.Service, error) {
 	var result *iam.Service
 	var err error
@@ -30,6 +31,7 @@ func (i *IAM) newIamManager(ctx context.Context, token string) (*iam.Service, er
 	return result, nil
 }
 
+// getGrantableRoles return list of grantable roles.
 func (i *IAM) getGrantableRoles(svc *iam.Service, r string) ([]string, error) {
 	var tk = ""
 	var result []string
@@ -61,6 +63,7 @@ func (i *IAM) getGrantableRoles(svc *iam.Service, r string) ([]string, error) {
 	return result, nil
 }
 
+// AllProjectRoles returns all project roles.
 func (i *IAM) AllProjectRoles(projectID string, token ...string) ([]string, error) {
 	t := ""
 	if token != nil && len(token) > 0 {
@@ -76,6 +79,7 @@ func (i *IAM) AllProjectRoles(projectID string, token ...string) ([]string, erro
 	return i.getGrantableRoles(s, fmt.Sprintf("//cloudresourcemanager.googleapis.com/projects/%s", projectID))
 }
 
+// AllDatasetRoles return all dataset roles.
 func (i *IAM) AllDatasetRoles(projectID, datasetID string, token ...string) ([]string, error) {
 	t := ""
 	if token != nil && len(token) > 0 {
@@ -91,6 +95,7 @@ func (i *IAM) AllDatasetRoles(projectID, datasetID string, token ...string) ([]s
 	return i.getGrantableRoles(s, fmt.Sprintf("//bigquery.googleapis.com/projects/%s/datasets/%s", projectID, datasetID))
 }
 
+// AllBucketRoles return all bucket roles.
 func (i *IAM) AllBucketRoles(bucketID string, token ...string) ([]string, error) {
 	t := ""
 	if token != nil && len(token) > 0 {

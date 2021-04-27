@@ -15,6 +15,7 @@ type BigQuery struct {
 	context *Context
 }
 
+// newBigQueryManager return a reference to BigQuery manager client.
 func (b *BigQuery) newBigQueryManager(ctx context.Context, projectID, token string) (*bigquery.Client, error) {
 	var result *bigquery.Client
 	var err error
@@ -33,6 +34,7 @@ func (b *BigQuery) newBigQueryManager(ctx context.Context, projectID, token stri
 	return result, nil
 }
 
+// AllProjectIDs returns all project IDs.
 func (b *BigQuery) AllProjectIDs(token ...string) ([]string, error) {
 	ctx := context.Background()
 	t := ""
@@ -76,6 +78,7 @@ func (b *BigQuery) AllProjectIDs(token ...string) ([]string, error) {
 	return result, nil
 }
 
+// AllDatasetIDs returns all dataset IDs at project ID.
 func (b *BigQuery) AllDatasetIDs(projectID string, token ...string) ([]string, error) {
 	t := ""
 	if token != nil && len(token) > 0 {
@@ -109,6 +112,7 @@ func (b *BigQuery) AllDatasetIDs(projectID string, token ...string) ([]string, e
 	return result, nil
 }
 
+// AllTableIDs returns all table IDs at project/dataset ID.
 func (b *BigQuery) AllTableIDs(projectID, datasetID string, token ...string) ([]string, error) {
 	t := ""
 	if token != nil && len(token) > 0 {
@@ -142,6 +146,7 @@ func (b *BigQuery) AllTableIDs(projectID, datasetID string, token ...string) ([]
 	return result, nil
 }
 
+// AllColumns returns all columns at project/dataset/table ID.
 func (b *BigQuery) AllColumns(projectID, datasetID, tableID string, token ...string) (*models.Columns, error) {
 	t := ""
 	if token != nil && len(token) > 0 {

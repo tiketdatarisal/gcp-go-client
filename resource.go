@@ -12,6 +12,7 @@ type Resource struct {
 	context *Context
 }
 
+// newResourceManager return a reference to resource manager client.
 func (r *Resource) newResourceManager(ctx context.Context, token string) (*cloudresourcemanager.Service, error) {
 	var result *cloudresourcemanager.Service
 	var err error
@@ -30,6 +31,7 @@ func (r *Resource) newResourceManager(ctx context.Context, token string) (*cloud
 	return result, nil
 }
 
+// getProjectPolicy return a project policy.
 func (r *Resource) getProjectPolicy(svc *cloudresourcemanager.Service, projectID string) (*cloudresourcemanager.Policy, error) {
 	req := cloudresourcemanager.GetIamPolicyRequest{
 		Options: &cloudresourcemanager.GetPolicyOptions{RequestedPolicyVersion: 3},
@@ -38,6 +40,7 @@ func (r *Resource) getProjectPolicy(svc *cloudresourcemanager.Service, projectID
 	return svc.Projects.GetIamPolicy(projectID, &req).Do()
 }
 
+// AllProjectIDs return all project IDs.
 func (r *Resource) AllProjectIDs(token ...string) ([]string, error) {
 	t := ""
 	if token != nil && len(token) > 0 {
@@ -74,6 +77,7 @@ func (r *Resource) AllProjectIDs(token ...string) ([]string, error) {
 	return result, nil
 }
 
+// AllRoleUsers return all user roles at project ID.
 func (r *Resource) AllRoleUsers(projectID string, token ...string) (models.RoleUsers, error) {
 	t := ""
 	if token != nil && len(token) > 0 {
